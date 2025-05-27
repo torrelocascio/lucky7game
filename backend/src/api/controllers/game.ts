@@ -27,7 +27,11 @@ const processGame = async () => {
     if (!user) continue;
 
     const won = bet.betOnLucky7 ? isLucky7 : !isLucky7;
-    const winnings = won ? (bet.betOnLucky7 ? bet.betAmount * 7 : bet.betAmount) : 0;
+    const winnings = won 
+      ? (bet.betOnLucky7 
+          ? bet.betAmount * 7  // Win 7x when betting on 7
+          : bet.betAmount * 2) // Win 2x when betting against 7
+      : 0;
 
     if (won) {
       user.tokens += winnings;
@@ -105,10 +109,36 @@ export const getGameStatus = async (req: Request, res: Response) => {
     const timeUntilNextRoll = Math.max(0, 15000 - timeSinceLastRoll);
     const canBet = timeSinceLastRoll <= 10000;
 
+    // Get the last game result for the current user
+    const userId = (req as AuthRequest).user?.id;
+    let lastGameResult = null;
+    let hasCurrentBet = false;
+    
+    if (userId) {
+      // Check if user has a bet in the current game
+      hasCurrentBet = currentBets.some(bet => bet.userId === userId);
+
+      const lastGame = await Game.findOne({ userId })
+        .sort({ createdAt: -1 })
+        .exec();
+      
+      if (lastGame) {
+        lastGameResult = {
+          diceRoll: lastGame.diceSum,
+          betOnLucky7: lastGame.betOnLucky7,
+          betAmount: lastGame.betAmount,
+          won: lastGame.won,
+          winnings: lastGame.winnings
+        };
+      }
+    }
+
     res.status(200).json({
       timeUntilNextRoll,
       canBet,
-      lastRollTime
+      lastRollTime,
+      lastGameResult,
+      hasCurrentBet
     });
   } catch (error) {
     console.error('Error getting game status:', error);
