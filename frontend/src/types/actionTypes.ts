@@ -24,6 +24,13 @@ export enum ActionType {
   // State interfaces
   export interface AuthState {
     authData: AuthData | null;
+    user: UserData | null;
+    loading: boolean;
+    error: string | null;
+  }
+  
+  export interface RootState {
+    auth: AuthState;
   }
   
   // Form data interfaces

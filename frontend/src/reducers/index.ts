@@ -1,12 +1,11 @@
 import { combineReducers, Reducer } from 'redux';
-import authReducer, { AuthState } from './auth';
+import authReducer from './auth';
+import { RootState, AuthAction } from '../types/actionTypes';
 
-export interface RootState {
-  auth: AuthState;
-}
+export type { RootState };
 
-const rootReducer: Reducer<RootState> = combineReducers({
-  auth: authReducer,
-});
+const rootReducer = combineReducers({
+  auth: authReducer
+}) as unknown as Reducer<RootState, AuthAction>;
 
 export default rootReducer;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, FormControlLabel, Checkbox, Typography, Box, Alert } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { RootState } from '../reducers';
+import type { RootState } from '../reducers';
 import { placeBet, getGameStatus } from '../api';
 
 const Lucky7Game: React.FC = () => {
