@@ -35,6 +35,7 @@ export interface UserJwtPayload extends JwtPayload {
   name: string;
   email: string;
   password: string;
+  tokens: number;
 }
 
 export interface AuthRequest extends Request {

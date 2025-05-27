@@ -1,17 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container } from "@mui/material";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { RootState } from "./reducers";
+import { fetchUserDataAction } from "./actions/auth";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from "./components/Navbar/Navbar";
-import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
-import PasswordSetting from "./components/PasswordSettings/PasswordSettings";
+import Auth from "./components/Login/Login";
 import Lucky7Game from "./components/Lucky7Game";
+import PasswordSettings from "./components/PasswordSettings/PasswordSettings";
 
-const App: React.FC = () => {
+const App = () => {
+  const dispatch = useDispatch<ThunkDispatch<RootState, unknown, AnyAction>>();
+
+  useEffect(() => {
+    dispatch(fetchUserDataAction());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Container maxWidth="lg">
@@ -29,9 +40,10 @@ const App: React.FC = () => {
         />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<Login />} />
-          <Route path="/password" element={<PasswordSetting />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/game" element={<Lucky7Game />} />
+          <Route path="/password" element={<PasswordSettings />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Container>
     </BrowserRouter>

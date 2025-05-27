@@ -1,29 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grow, Paper, Typography } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
-import { UserData } from "../../types/actionTypes";
+import { useSelector } from "react-redux";
+import { RootState } from "../../reducers";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  let user: UserData | null = null;
-  
-  try {
-    const profileStr = localStorage.getItem("profile");
-    if (profileStr) {
-      const profile = JSON.parse(profileStr);
-      if (profile?.token) {
-        user = jwtDecode<UserData>(profile.token);
-      }
+  const navigate = useNavigate();
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/game');
     }
-  } catch (error) {
-    console.error("Error parsing profile from localStorage:", error);
-    user = null;
-  }
+  }, [user, navigate]);
 
   return (
     <Grow in>
       <Container component="main" maxWidth="sm">
         <Paper elevation={3}>
-          {user !== null ? (
+          {user ? (
             <Typography variant="h4" align="center" color="primary">
               {`Welcome ${user.name}`}
             </Typography>

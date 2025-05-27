@@ -1,26 +1,31 @@
-import express, { Express } from "express";
+import 'dotenv/config';
+import express from "express";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
 import cors from "cors";
-import dotenv from 'dotenv';
-import userRouter from "./src/api/user.js";
-import gameRouter from "./src/api/routes/game.js";
+import userRoutes from "./src/api/routes/user.js";
+import gameRoutes from "./src/api/routes/game.js";
 
-dotenv.config();
+const app = express();
 
-const app: Express = express();
-app.use(bodyParser.json({ limit: "5mb" }));
-app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
-
+app.use(express.json());
 app.use(cors());
-app.use("/api/user", userRouter);
-app.use("/api/game", gameRouter);
 
-const PORT: string | number = process.env.PORT || 5000;
+app.use("/api/user", userRoutes);
+app.use("/api/game", gameRoutes);
+
+const PORT = process.env.PORT || 3001;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/lucky7";
+
+console.log('MongoDB URI:', MONGODB_URI);
 
 mongoose
-  .connect(process.env.MONGODB_URI || '')
-  .then(() =>
-    app.listen(PORT, () => console.log(`Server Started On Port ${PORT}`))
-  )
-  .catch((error) => console.log(error.message));
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("MongoDB connection error:", error);
+  });

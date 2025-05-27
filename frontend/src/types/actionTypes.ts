@@ -1,7 +1,8 @@
 // Action types
 export enum ActionType {
     LOGIN = "LOGIN",
-    LOGOUT = "LOGOUT"
+    LOGOUT = "LOGOUT",
+    UPDATE_USER = "UPDATE_USER"
   }
   
   // Auth data type
@@ -12,21 +13,27 @@ export enum ActionType {
   // Actions interfaces
   export interface LoginAction {
     type: ActionType.LOGIN;
-    data: AuthData;
+    data: {
+      token: string;
+      user: UserData;
+    };
   }
   
   export interface LogoutAction {
     type: ActionType.LOGOUT;
   }
   
-  export type AuthAction = LoginAction | LogoutAction;
+  export interface UpdateUserAction {
+    type: ActionType.UPDATE_USER;
+    data: UserData;
+  }
+  
+  export type AuthAction = LoginAction | LogoutAction | UpdateUserAction;
   
   // State interfaces
   export interface AuthState {
-    authData: AuthData | null;
+    authData: string | null;
     user: UserData | null;
-    loading: boolean;
-    error: string | null;
   }
   
   export interface RootState {
@@ -56,8 +63,5 @@ export enum ActionType {
     _id: string;
     name: string;
     email: string;
-    password: string;
-    exp?: number;
-    picture?: string;
-    tokens?: number;
+    tokens: number;
   }

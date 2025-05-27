@@ -28,13 +28,21 @@ const login = async (req: Request, res: Response) => {
         _id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
-        password: existingUser.password,
+        password: existingUser.password
       },
       "test",
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token });
+    res.status(200).json({ 
+      token,
+      user: {
+        _id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+        tokens: existingUser.tokens
+      }
+    });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Something went wrong" });

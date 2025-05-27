@@ -4,10 +4,10 @@ import { LoginFormData, SignupFormData, PasswordChangeFormData } from "../types/
 const API = axios.create({ baseURL: "http://localhost:3001" });
 
 API.interceptors.request.use((req) => {
-  if (localStorage.getItem("profile")) {
-    const profile = JSON.parse(localStorage.getItem("profile") || "{}");
+  const token = localStorage.getItem("token");
+  if (token) {
     req.headers = req.headers || {};
-    req.headers.Authorization = `Bearer ${profile.token}`;
+    req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
 });
